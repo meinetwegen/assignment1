@@ -1,4 +1,4 @@
-class Book {
+public class Book {
     private int id;
     private static int idGen = 1;
     private String title;
@@ -7,8 +7,8 @@ class Book {
     private boolean available;
 
     public Book() {
-        this.available = true;
         this.id = idGen++;
+        this.available = true;
     }
 
     public Book(String title, String author, int year) {
@@ -18,16 +18,16 @@ class Book {
         setYear(year);
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public String getAuthor() {
         return author;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getYear() {
@@ -39,40 +39,36 @@ class Book {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.isEmpty()) {
+        if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title must not be null or empty");
         }
-        this.title = title;
+        this.title = title.trim();
     }
 
     public void setAuthor(String author) {
-        if (author == null || author.isEmpty()) {
+        if (author == null || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author must not be null or empty");
         }
-        this.author = author;
+        this.author = author.trim();
     }
 
     public void setYear(int year) {
         if (year <= 1500 || year >= 2025) {
-            throw new IllegalArgumentException("Year must be in a reasonable range");
+            throw new IllegalArgumentException("Year must be between 1500 and 2025");
         }
         this.year = year;
     }
 
-    public void setAvailable(boolean available) {           //Как будто это не надо добавлять, потому что сет авейлабл будет плохой идеей для реального использования(т.е. с помощью чего-то стороннего можно будет вернуть книгу, даже если она не возвращена)
-        this.available = available;
-    }
-
     public void markAsBorrowed() {
-        setAvailable(false);        //или this.available = false; (ниже так же)
+        this.available = false;
     }
 
     public void markAsReturned() {
-        setAvailable(true);
+        this.available = true;
     }
 
     @Override
     public String toString() {
-        return "Book: id=" + id + ", title=" + title + ", author=" + author + ", year=" + year + ", available=" + available;
+        return "Book [ID=" + id + ", Title='" + title + "', Author=" + author + ", Year=" + year + ", Status=" + available + "]";
     }
 }

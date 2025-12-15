@@ -1,15 +1,27 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 
 public class LibraryApp {
     private ArrayList<Book> books = new ArrayList<>();
     private Scanner scanner = new Scanner(System.in);
 
+    private int readIntSafely(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String line = scanner.nextLine();
+            try {
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input");
+            }
+        }
+    }
+
     public void run() {
-        System.out.println("Welcome to Library App!");
 
         while (true) {
-            System.out.println("Menu");
+            System.out.println("\nWelcome to Library App!");
             System.out.println("1. Print all books");
             System.out.println("2. Add new book");
             System.out.println("3. Search books by title");
@@ -40,7 +52,7 @@ public class LibraryApp {
                     deleteBook();
                     break;
                 case "7":
-                    System.out.println("Goodbye!");
+                    scanner.close();
                     return;
                 default:
                     System.out.println("Invalid choice");
@@ -50,7 +62,7 @@ public class LibraryApp {
 
     private void printAllBooks() {
         if (books.isEmpty()) {
-            System.out.println("No books in the library");
+            System.out.println("No books in the library.");
         } else {
             for (Book b : books) {
                 System.out.println(b.toString());
@@ -63,36 +75,44 @@ public class LibraryApp {
         String title = scanner.nextLine();
         System.out.print("Author: ");
         String author = scanner.nextLine();
-        System.out.print("Year: ");
-        int year = Integer.parseInt(scanner.nextLine());
 
-        Book newBook = new Book(title, author, year);
-        books.add(newBook);
-        System.out.println("Book added");
+        int year = readIntSafely("Year: ");
+
+        try {
+            Book newBook = new Book(title, author, year);
+            books.add(newBook);
+            System.out.println("Book added id: " + newBook.getId());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Validation error: " + e.getMessage());
+        }
     }
 
     private void searchBooks() {
-        System.out.print("Input part of the title: ");
+        System.out.print("Enter part of the title: ");
         String part = scanner.nextLine().toLowerCase();
 
+        boolean found = false;
         for (Book b : books) {
             if (b.getTitle().toLowerCase().contains(part)) {
                 System.out.println(b);
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("No books found");
         }
     }
 
     private void borrowBook() {
-        System.out.print("Book ID: ");
-        int id = Integer.parseInt(scanner.nextLine());
+        int id = readIntSafely("Enter Book ID: ");
 
         for (Book b : books) {
             if (b.getId() == id) {
-                if (b.getAvailable() == true) {
+                if (b.getAvailable()) {
                     b.markAsBorrowed();
-                    System.out.println("Borrowed the book");
+                    System.out.println("Book borrowed successfully");
                 } else {
-                    System.out.println("The book is already borrowed");
+                    System.out.println("Book already borrowed");
                 }
                 return;
             }
@@ -101,16 +121,15 @@ public class LibraryApp {
     }
 
     private void returnBook() {
-        System.out.print("Book ID: ");
-        int id = Integer.parseInt(scanner.nextLine());
+        int id = readIntSafely("Enter Book ID: ");
 
         for (Book b : books) {
             if (b.getId() == id) {
-                if (b.getAvailable() == false) {
+                if (!b.getAvailable()) {
                     b.markAsReturned();
                     System.out.println("Book returned");
                 } else {
-                    System.out.println("This book is already available");
+                    System.out.println("Book already available");
                 }
                 return;
             }
@@ -119,8 +138,7 @@ public class LibraryApp {
     }
 
     private void deleteBook() {
-        System.out.print("Book ID: ");
-        int id = Integer.parseInt(scanner.nextLine());
+        int id = readIntSafely("Enter Book ID to delete: ");
 
         for (int i = 0; i < books.size(); i++) {
             if (books.get(i).getId() == id) {
@@ -130,10 +148,5 @@ public class LibraryApp {
             }
         }
         System.out.println("Book not found");
-    }
-
-    public static void main(String[] args) {
-        LibraryApp app = new LibraryApp();
-        app.run();
     }
 }

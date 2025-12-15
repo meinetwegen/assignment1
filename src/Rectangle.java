@@ -1,8 +1,8 @@
-class Rectangle {
+public class Rectangle {
     private double width;
     private double height;
     private int id;
-    private static int idGen = 1; //Спросить на паре: тут 0 или 1(при создании первый будет с айди 1?)
+    private static int idGen = 1;
 
     public Rectangle() {
         this.width = 1.0;
@@ -52,6 +52,6 @@ class Rectangle {
 
     @Override
     public String toString() {
-        return "Rectangle: id=" + id + ", width=" + width + ", height=" + height;
+        return "Rectangle [ID: " + id + ", Width: " + width + ", Height: " + height + "]";
     }
 }
